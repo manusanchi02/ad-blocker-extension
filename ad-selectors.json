@@ -1,0 +1,32 @@
+{
+  "specific": [
+    "#iubenda-cs-banner",
+    ".iubenda-cs-container",
+    "#onetrust-banner-sdk",
+    ".cookie-banner",
+    "[id^='google_ads_']",
+    "[id^='div-gpt-ad']",
+    "iframe[src*='doubleclick']",
+    "iframe[src*='googlesyndication']",
+    "iframe[src*='adservice']",
+    ".dmp_iframe"
+  ],
+  "generic": [
+    ".ad",
+    ".ads",
+    ".adv",
+    ".advertisement",
+    ".video-ads",
+    ".banner-ad",
+    ".ad-container",
+    ".ad-banner",
+    ".ad-slot",
+    ".ad-wrapper",
+    ".ad-placeholder",
+    ".google-ad",
+    ".google-ads",
+    ".sponsored-content",
+    "#ad-banner",
+    "#ad-container"
+  ]
+}
