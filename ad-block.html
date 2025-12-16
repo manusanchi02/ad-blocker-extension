@@ -5,48 +5,117 @@
   <meta charset="UTF-8">
   <style>
     body {
-      width: 300px;
-      padding: 20px;
+      width: 20rem;
+      padding: 1.25rem;
       font-family: Arial, sans-serif;
       text-align: center;
+      box-sizing: border-box;
     }
 
     h1 {
       color: #4CAF50;
-      font-size: 20px;
-      margin-bottom: 10px;
+      font-size: 1.25rem;
+      margin-bottom: 0.5rem;
     }
 
     .counter {
-      font-size: 48px;
+      font-size: 3rem;
       font-weight: bold;
       color: #333;
-      margin: 20px 0;
+      margin: 1rem 0;
     }
 
     .label {
       color: #666;
-      font-size: 14px;
-      margin-bottom: 15px;
+      font-size: 0.875rem;
+      margin-bottom: 1rem;
     }
 
     button {
       background-color: #f44336;
       color: white;
       border: none;
-      padding: 10px 20px;
-      font-size: 14px;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem;
       cursor: pointer;
-      border-radius: 4px;
-      margin-top: 10px;
+      border-radius: 0.25rem;
+      margin-top: 0.625rem;
     }
 
     button:hover {
       background-color: #da190b;
     }
 
-    input[type="checkbox"] {
-      margin-top: 15px;
+    .toggle-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 1.25rem;
+      align-items: flex-start;
+      padding: 0 1rem;
+    }
+
+    .toggle-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    .toggle-item label {
+      font-size: 0.875rem;
+      color: #333;
+      cursor: pointer;
+      flex: 1;
+      text-align: left;
+      margin-right: 0.5rem;
+    }
+
+    /* Toggle Switch */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 3.125rem;
+      height: 1.5rem;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 1.5rem;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 1.125rem;
+      width: 1.125rem;
+      left: 0.1875rem;
+      bottom: 0.1875rem;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #4CAF50;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(5.7rem);
     }
   </style>
 </head>
@@ -56,10 +125,33 @@
   <div class="counter" id="counter">0</div>
   <div class="label">Blocked ads</div>
   <button id="reset">Reset counter</button>
-  <div>
-    <input type="checkbox" id="toggleBlocking" checked> Enable Ad Blocking </input>
-    <input type="checkbox" id="toggleVideoBlocking"> Enable Video Blocking </input>
+  
+  <div class="toggle-container">
+    <div class="toggle-item">
+      <label for="toggleBlocking">Ad Blocking</label>
+      <label class="switch">
+        <input type="checkbox" id="toggleBlocking" checked>
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="toggle-item">
+      <label for="toggleVideoBlocking">Video Blocking</label>
+      <label class="switch">
+        <input type="checkbox" id="toggleVideoBlocking">
+        <span class="slider"></span>
+      </label>
+    </div>
+    
+    <div class="toggle-item">
+      <label for="toggleOpenInNewTab">Open in new tab Blocking</label>
+      <label class="switch">
+        <input type="checkbox" id="toggleOpenInNewTab">
+        <span class="slider"></span>
+      </label>
+    </div>
   </div>
+  
   <script src="popup.js"></script>
 </body>
 

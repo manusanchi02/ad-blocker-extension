@@ -28,6 +28,18 @@ document.getElementById('toggleVideoBlocking').addEventListener('change', functi
     chrome.storage.local.set({ videoAdBlockingEnabled: isEnabled });
 });
 
+// Load and set the tab opening toggle state
+chrome.storage.local.get(['openInNewTab'], function(result) {
+    const isEnabled = result.openInNewTab === true;
+    document.getElementById('toggleOpenInNewTab').checked = isEnabled;
+});
+
+// Tab opening toggle functionality
+document.getElementById('toggleOpenInNewTab').addEventListener('change', function() {
+    const isEnabled = this.checked;
+    chrome.storage.local.set({ openInNewTab: isEnabled });
+});
+
 // Reset button functionality
 document.getElementById('reset').addEventListener('click', function() {
     chrome.storage.local.set({ adsBlocked: 0 }, function() {
