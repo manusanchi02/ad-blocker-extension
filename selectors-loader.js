@@ -1,5 +1,5 @@
 // Selectors Loader - Carica i selettori da GitHub
-const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/ad-selectors.json';
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/manusanchi02/ad-blocker-extension/blob/master/ad-selectors.json';
 const CACHE_KEY = 'ad_selectors_cache';
 const LAST_UPDATE_KEY = 'ad_selectors_last_update';
 const UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minuti
