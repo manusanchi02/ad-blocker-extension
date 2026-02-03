@@ -25,7 +25,8 @@ const DEFAULT_SELECTORS = {
     ".privacy-cp-wall",
     "#privacy-cp-wall",
     ".didomi-host",
-    "#didomi-host"
+    "#didomi-host",
+    "#cl-consent"
   ],
   "generic": [
     ".ad",
@@ -43,7 +44,8 @@ const DEFAULT_SELECTORS = {
     ".google-ads",
     ".sponsored-content",
     "#ad-banner",
-    "#ad-container"
+    "#ad-container",
+    ".cl-constent"
   ]
 };
 
