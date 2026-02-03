@@ -47,6 +47,39 @@ document.getElementById('reset').addEventListener('click', function() {
     });
 });
 
+// Update selectors button functionality
+document.getElementById('updateSelectors').addEventListener('click', async function() {
+    const button = this;
+    const originalText = button.textContent;
+    
+    button.textContent = 'Updating...';
+    button.disabled = true;
+    
+    try {
+        await forceUpdateSelectors();
+        button.textContent = '✓ Updated!';
+        
+        // Ricarica tutti i tab aperti per applicare i nuovi selettori
+        chrome.tabs.query({}, function(tabs) {
+            tabs.forEach(tab => {
+                if (tab.url && !tab.url.startsWith('chrome://')) {
+                    chrome.tabs.reload(tab.id);
+                }
+            });
+        });
+        
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, 2000);
+    } catch (error) {
+        button.textContent = '✗ Error';
+        setTimeout(() => {
+            button.textContent = originalText;
+            button.disabled = false;
+        }, 2000);
+    }
+});
 
 
 

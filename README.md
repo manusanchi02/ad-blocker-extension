@@ -1,16 +1,19 @@
 # Ad Blocker Extension
 
-A lightweight and efficient browser extension that blocks ads, banners, and unwanted content across websites.
+A lightweight and efficient browser extension that blocks ads, banners, and unwanted content across websites with **dynamic selector updates from GitHub**.
 
 ## 🚀 Features
 
 - **Automatic Ad Blocking**: Removes ads, banners, and sponsored content from web pages
+- **🔄 Dynamic Selector Updates**: Automatically fetches updated ad selectors from GitHub (no extension reload needed!)
 - **Smart Detection**: Uses both specific and generic CSS selectors to identify and remove ads
 - **Video Ad Blocking**: Optional feature to block video advertisements
 - **Cookie Banner Removal**: Automatically removes annoying cookie consent banners
 - **Content Preservation**: Intelligent filtering to avoid blocking legitimate content like forms and interactive elements
 - **Ad Counter**: Tracks the number of ads blocked during your browsing session
 - **Toggle Controls**: Easy on/off switches for general ad blocking and video ad blocking
+- **Manual Update**: Force update selectors from GitHub with a button click
+- **Offline Support**: Uses cached selectors when GitHub is not available
 - **Reset Counter**: Reset the blocked ads counter at any time
 - **Lightweight**: Minimal performance impact on your browsing experience
 
@@ -25,28 +28,70 @@ A lightweight and efficient browser extension that blocks ads, banners, and unwa
 
 1. Clone or download this repository:
    ```bash
-   git clone https://github.com/manusanchi02/ad-blocker-extension.git
+   git clone https://github.com/YOUR_USERNAME/ad-blocker-extension.git
    ```
 
-2. Open your Chrome browser and navigate to `chrome://extensions/`
+2. **IMPORTANT**: Edit [selectors-loader.js](selectors-loader.js) and replace the GitHub URL with your own:
+   ```javascript
+   const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/YOUR_USERNAME/YOUR_REPO/main/ad-selectors.json';
+   ```
+   Replace `YOUR_USERNAME` and `YOUR_REPO` with your GitHub username and repository name.
 
-3. Enable **Developer mode** (toggle in the top right corner)
+3. Open your Chrome browser and navigate to `chrome://extensions/`
 
-4. Click **Load unpacked**
+4. Enable **Developer mode** (toggle in the top right corner)
 
-5. Select the folder containing the extension files
+5. Click **Load unpacked**
 
-6. The Ad Blocker extension is now installed and active!
+6. Select the folder containing the extension files
+
+7. The Ad Blocker extension is now installed and active!
+
+## 🔄 Dynamic Updates System
+
+### How It Works
+
+The extension now loads ad selectors from GitHub instead of using a static file:
+
+1. **First Load**: Downloads selectors from your GitHub repository
+2. **Caching**: Stores selectors in local storage for offline access
+3. **Auto-Update**: Checks for updates every 24 hours automatically
+4. **Fallback**: Uses cached selectors if GitHub is unavailable
+5. **Manual Update**: Click "Update Filters" button in the popup to force an update
+
+### Updating Selectors
+
+To add new ad selectors:
+
+1. Edit the `ad-selectors.json` file in your local repository
+2. Commit and push changes to GitHub:
+   ```bash
+   git add ad-selectors.json
+   git commit -m "Updated ad selectors"
+   git push
+   ```
+3. The extension will automatically download the new selectors within 24 hours
+4. Or click "Update Filters" in the extension popup for immediate update
+
+### Benefits
+
+- ✅ No need to reload the extension
+- ✅ Updates propagate to all users automatically
+- ✅ Easy to maintain and update
+- ✅ Works offline with cached selectors
+- ✅ Reduces extension file size
 
 ## 📁 Project Structure
 
 ```
 ad-blocker-extension/
 ├── manifest.json         # Extension configuration
+├── selectors-loader.js   # Dynamic selector loader from GitHub
 ├── ad-block.js           # Main content script for ad blocking logic
 ├── ad-block.html         # Popup HTML interface
 ├── popup.js              # Popup functionality and controls
-├── ad-selectors.json     # CSS selectors for ad detection
+├── ad-selectors.json     # CSS selectors for ad detection (GitHub source)
+├── background.js         # Background service worker
 └── README.md             # Project documentation
 ```
 
@@ -87,13 +132,15 @@ Optional feature that can be enabled via the popup interface to remove video con
 Click the extension icon to access the control panel:
 
 - **Ad Counter**: Displays the total number of ads blocked in the current session
+- **Reset Counter**: Reset the blocked ads counter to 0
+- **Update Filters**: Manually force update selectors from GitHub
 - **Toggle Ad Blocking**: Enable/disable general ad blocking
 - **Toggle Video Blocking**: Enable/disable video ad blocking
-- **Reset Counter**: Reset the blocked ads counter to 0
+- **Toggle Open in New Tab**: Enable/disable blocking of forced new tabs
 
 ### Customization
 
-You can customize the ad blocking by editing [ad-selectors.json](ad-selectors.json):
+You can customize the ad blocking by editing [ad-selectors.json](ad-selectors.json) in your GitHub repository:
 
 ```json
 {

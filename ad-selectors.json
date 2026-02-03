@@ -10,7 +10,15 @@
     "iframe[src*='googlesyndication']",
     "iframe[src*='adservice']",
     ".dmp_iframe",
-    ".qc-cmp2-container"
+    ".qc-cmp2-container",
+    "#ez-cookie-dialog-wrapper",
+    ".ez-cookie-dialog-wrapper",
+    "#ez-cmpv2-container",
+    ".ez-cmpv2-container",
+    ".privacy-cp-wall",
+    "#privacy-cp-wall",
+    ".didomi-host",
+    "#didomi-host"
   ],
   "generic": [
     ".ad",

@@ -1,14 +1,18 @@
-// Gets the ad selectors from a JSON file and removes matching elements from the DOM
+// Gets the ad selectors from GitHub (with cache) and removes matching elements from the DOM
 let specificSelectors = [];
 let genericSelectors = [];
 
-fetch(chrome.runtime.getURL('ad-selectors.json'))
-    .then(response => response.json())
-    .then(data => {
-        specificSelectors = data.specific || [];
-        genericSelectors = data.generic || [];
-        blockAds();
-    });
+// Carica i selettori usando il loader
+getSelectors().then(data => {
+    specificSelectors = data.specific || [];
+    genericSelectors = data.generic || [];
+    blockAds();
+}).catch(error => {
+    console.error('Errore nel caricamento dei selettori:', error);
+    // Usa i selettori di default in caso di errore
+    specificSelectors = [];
+    genericSelectors = [];
+});
 
 // Check if an element is likely a legitimate content element
 function isLegitimateElement(element) {
