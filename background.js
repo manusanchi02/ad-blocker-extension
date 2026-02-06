@@ -47,6 +47,10 @@ chrome.tabs.onCreated.addListener((tab) => {
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
     if (!changeInfo.url) return;
+    if (tabOpeners.get(tabId).url.contains('#google-vignette')) {
+        chrome.tabs.update(tabId, { url: changeInfo.url.replace('#google_vignette', '') });
+        return;
+    }
     chrome.storage.local.get(['openInNewTab'], (result) => {
         const blockingEnabled = result.openInNewTab === true;
         if (!blockingEnabled) {
