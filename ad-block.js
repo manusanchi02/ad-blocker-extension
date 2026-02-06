@@ -2,14 +2,13 @@
 let specificSelectors = [];
 let genericSelectors = [];
 
-// Carica i selettori usando il loader
+// Function to fetch selectors from GitHub with caching
 getSelectors().then(data => {
     specificSelectors = data.specific || [];
     genericSelectors = data.generic || [];
     blockAds();
 }).catch(error => {
     console.error('Errore nel caricamento dei selettori:', error);
-    // Usa i selettori di default in caso di errore
     specificSelectors = [];
     genericSelectors = [];
 });

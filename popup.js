@@ -1,73 +1,70 @@
 // Load and display the ad counter
-chrome.storage.local.get(['adsBlocked'], function(result) {
+chrome.storage.local.get(['adsBlocked'], function (result) {
     const count = result.adsBlocked || 0;
     document.getElementById('counter').textContent = count;
 });
 
 // Load and set the ad blocking toggle state
-chrome.storage.local.get(['adBlockingEnabled'], function(result) {
+chrome.storage.local.get(['adBlockingEnabled'], function (result) {
     const isEnabled = result.adBlockingEnabled !== false;
     document.getElementById('toggleBlocking').checked = isEnabled;
 });
 
 // Ad blocking toggle functionality
-document.getElementById('toggleBlocking').addEventListener('change', function() {
+document.getElementById('toggleBlocking').addEventListener('change', function () {
     const isEnabled = this.checked;
     chrome.storage.local.set({ adBlockingEnabled: isEnabled });
 });
 
 // Load and set the video ad blocking toggle state
-chrome.storage.local.get(['videoAdBlockingEnabled'], function(result) {
+chrome.storage.local.get(['videoAdBlockingEnabled'], function (result) {
     const isEnabled = result.videoAdBlockingEnabled === true;
     document.getElementById('toggleVideoBlocking').checked = isEnabled;
 });
 
 // Video ad blocking toggle functionality
-document.getElementById('toggleVideoBlocking').addEventListener('change', function() {
+document.getElementById('toggleVideoBlocking').addEventListener('change', function () {
     const isEnabled = this.checked;
     chrome.storage.local.set({ videoAdBlockingEnabled: isEnabled });
 });
 
 // Load and set the tab opening toggle state
-chrome.storage.local.get(['openInNewTab'], function(result) {
+chrome.storage.local.get(['openInNewTab'], function (result) {
     const isEnabled = result.openInNewTab === true;
     document.getElementById('toggleOpenInNewTab').checked = isEnabled;
 });
 
 // Tab opening toggle functionality
-document.getElementById('toggleOpenInNewTab').addEventListener('change', function() {
+document.getElementById('toggleOpenInNewTab').addEventListener('change', function () {
     const isEnabled = this.checked;
     chrome.storage.local.set({ openInNewTab: isEnabled });
 });
 
 // Reset button functionality
-document.getElementById('reset').addEventListener('click', function() {
-    chrome.storage.local.set({ adsBlocked: 0 }, function() {
+document.getElementById('reset').addEventListener('click', function () {
+    chrome.storage.local.set({ adsBlocked: 0 }, function () {
         document.getElementById('counter').textContent = '0';
     });
 });
 
 // Update selectors button functionality
-document.getElementById('updateSelectors').addEventListener('click', async function() {
+document.getElementById('updateSelectors').addEventListener('click', async function () {
     const button = this;
     const originalText = button.textContent;
-    
+
     button.textContent = 'Updating...';
     button.disabled = true;
-    
+
     try {
         await forceUpdateSelectors();
         button.textContent = '✓ Updated!';
-        
-        // Ricarica tutti i tab aperti per applicare i nuovi selettori
-        chrome.tabs.query({}, function(tabs) {
+        chrome.tabs.query({}, function (tabs) {
             tabs.forEach(tab => {
                 if (tab.url && !tab.url.startsWith('chrome://')) {
                     chrome.tabs.reload(tab.id);
                 }
             });
         });
-        
         setTimeout(() => {
             button.textContent = originalText;
             button.disabled = false;

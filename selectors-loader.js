@@ -1,55 +1,54 @@
-// Selectors Loader - Carica i selettori da GitHub
-const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/manusanchi02/ad-blocker-extension/blob/master/ad-selectors.json';
+const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/manusanchi02/ad-blocker-extension/master/ad-selectors.json';
 const CACHE_KEY = 'ad_selectors_cache';
 const LAST_UPDATE_KEY = 'ad_selectors_last_update';
-const UPDATE_INTERVAL = 5 * 60 * 1000; // 5 minuti
+const UPDATE_INTERVAL = 24 * 60 * 60 * 1000; // 24 hours
 
-// Selettori di default come fallback
 const DEFAULT_SELECTORS = {
-  "specific": [
-    "#iubenda-cs-banner",
-    ".iubenda-cs-container",
-    "#onetrust-banner-sdk",
-    ".cookie-banner",
-    "[id^='google_ads_']",
-    "[id^='div-gpt-ad']",
-    "iframe[src*='doubleclick']",
-    "iframe[src*='googlesyndication']",
-    "iframe[src*='adservice']",
-    ".dmp_iframe",
-    ".qc-cmp2-container",
-    "#ez-cookie-dialog-wrapper",
-    ".ez-cookie-dialog-wrapper",
-    "#ez-cmpv2-container",
-    ".ez-cmpv2-container",
-    ".privacy-cp-wall",
-    "#privacy-cp-wall",
-    ".didomi-host",
-    "#didomi-host",
-    "#cl-consent"
-  ],
-  "generic": [
-    ".ad",
-    ".ads",
-    ".adv",
-    ".advertisement",
-    ".video-ads",
-    ".banner-ad",
-    ".ad-container",
-    ".ad-banner",
-    ".ad-slot",
-    ".ad-wrapper",
-    ".ad-placeholder",
-    ".google-ad",
-    ".google-ads",
-    ".sponsored-content",
-    "#ad-banner",
-    "#ad-container",
-    ".cl-constent"
-  ]
+    "specific": [
+        "#iubenda-cs-banner",
+        ".iubenda-cs-container",
+        "#onetrust-banner-sdk",
+        ".cookie-banner",
+        "[id^='google_ads_']",
+        "[id^='div-gpt-ad']",
+        "iframe[src*='doubleclick']",
+        "iframe[src*='googlesyndication']",
+        "iframe[src*='adservice']",
+        ".dmp_iframe",
+        ".qc-cmp2-container",
+        "#ez-cookie-dialog-wrapper",
+        ".ez-cookie-dialog-wrapper",
+        "#ez-cmpv2-container",
+        ".ez-cmpv2-container",
+        ".privacy-cp-wall",
+        "#privacy-cp-wall",
+        ".didomi-host",
+        "#didomi-host"
+    ],
+    "generic": [
+        ".ad",
+        ".ads",
+        ".adv",
+        ".advertisement",
+        ".video-ads",
+        ".banner-ad",
+        ".ad-container",
+        ".ad-banner",
+        ".ad-slot",
+        ".ad-wrapper",
+        ".ad-placeholder",
+        ".google-ad",
+        ".google-ads",
+        ".sponsored-content",
+        "#ad-banner",
+        "#ad-container"
+    ]
 };
 
-// Carica i selettori da GitHub
+/**
+ * Fetch selectors from GitHub repository
+ * @returns {Promise<Object|null>} The selectors object or null if failed
+ */
 async function fetchSelectorsFromGitHub() {
     try {
         const response = await fetch(GITHUB_RAW_URL);
@@ -64,7 +63,11 @@ async function fetchSelectorsFromGitHub() {
     }
 }
 
-// Salva i selettori nella cache
+/**
+ * Function to save selectors to Chrome storage
+ * @param {Object} selectors The selectors object to save
+ * @returns {Promise<void>} A promise that resolves when the selectors are saved
+ */
 async function saveSelectorsCacheChrome(selectors) {
     return new Promise((resolve) => {
         chrome.storage.local.set({
@@ -74,7 +77,10 @@ async function saveSelectorsCacheChrome(selectors) {
     });
 }
 
-// Carica i selettori dalla cache
+/**
+ * Function to load selectors from Chrome storage
+ * @returns {Promise<{selectors: Object|null, lastUpdate: number|null}>} A promise that resolves to an object containing selectors and last update time
+ */
 async function loadSelectorsCacheChrome() {
     return new Promise((resolve) => {
         chrome.storage.local.get([CACHE_KEY, LAST_UPDATE_KEY], (result) => {
@@ -86,46 +92,46 @@ async function loadSelectorsCacheChrome() {
     });
 }
 
-// Controlla se i selettori in cache sono ancora validi
+/**
+ * Function to check if the cache is still valid
+ * @param {number} lastUpdate The timestamp of the last update 
+ * @returns {boolean} True if the cache is valid, false otherwise
+ */
 function isCacheValid(lastUpdate) {
     if (!lastUpdate) return false;
     return (Date.now() - lastUpdate) < UPDATE_INTERVAL;
 }
 
-// Funzione principale per ottenere i selettori
+/**
+ * Function to get selectors, updating from GitHub if necessary
+ * @param {boolean} forceUpdate Whether to force an update from GitHub
+ * @returns {Promise<Object>} A promise that resolves to the selectors object
+ */
 async function getSelectors(forceUpdate = false) {
-    // Prova a caricare dalla cache
     const cached = await loadSelectorsCacheChrome();
-    
-    // Se la cache è valida e non stiamo forzando l'aggiornamento, usala
     if (!forceUpdate && cached.selectors && isCacheValid(cached.lastUpdate)) {
-        console.log('Usando selettori dalla cache');
+        console.log('Using cached selectors');
         return cached.selectors;
     }
-    
-    // Altrimenti prova a scaricare da GitHub
-    console.log('Scaricando selettori da GitHub...');
+    console.log('Downloading selectors from GitHub...');
     const freshSelectors = await fetchSelectorsFromGitHub();
-    
     if (freshSelectors) {
-        // Salva nella cache per il futuro
         await saveSelectorsCacheChrome(freshSelectors);
-        console.log('Selettori aggiornati da GitHub');
+        console.log('Updated selectors from GitHub');
         return freshSelectors;
     }
-    
-    // Se il download fallisce, usa la cache anche se scaduta
     if (cached.selectors) {
-        console.log('Usando selettori dalla cache scaduta (GitHub non disponibile)');
+        console.log('Using cached selectors after failed update');
         return cached.selectors;
     }
-    
-    // Come ultima risorsa, usa i selettori di default
-    console.log('Usando selettori di default');
+    console.log('Using default selectors as fallback');
     return DEFAULT_SELECTORS;
 }
 
-// Forza l'aggiornamento dei selettori
+/**
+ * Force update selectors from GitHub
+ * @returns {Promise<Object>} A promise that resolves to the updated selectors object
+ */
 async function forceUpdateSelectors() {
     return await getSelectors(true);
 }

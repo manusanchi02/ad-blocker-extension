@@ -18,7 +18,8 @@
     ".privacy-cp-wall",
     "#privacy-cp-wall",
     ".didomi-host",
-    "#didomi-host"
+    "#didomi-host",
+    "#cl-consent"
   ],
   "generic": [
     ".ad",
@@ -36,6 +37,7 @@
     ".google-ads",
     ".sponsored-content",
     "#ad-banner",
-    "#ad-container"
+    "#ad-container",
+    "#cl-consent"
   ]
 }
