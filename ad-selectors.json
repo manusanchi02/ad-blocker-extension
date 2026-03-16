@@ -19,7 +19,8 @@
     "#privacy-cp-wall",
     ".didomi-host",
     "#didomi-host",
-    "#cl-consent"
+    "#cl-consent",
+    "#onetrust-consent-sdk"
   ],
   "generic": [
     ".ad",
@@ -38,6 +39,7 @@
     ".sponsored-content",
     "#ad-banner",
     "#ad-container",
-    "#cl-consent"
+    "#cl-consent",
+    "#onetrust-consent-sdk"
   ]
 }
