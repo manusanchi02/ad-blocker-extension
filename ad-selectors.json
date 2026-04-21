@@ -20,7 +20,8 @@
     ".didomi-host",
     "#didomi-host",
     "#cl-consent",
-    "#onetrust-consent-sdk"
+    "#onetrust-consent-sdk",
+    "#ad_position_box"
   ],
   "generic": [
     ".ad",
@@ -40,6 +41,7 @@
     "#ad-banner",
     "#ad-container",
     "#cl-consent",
-    "#onetrust-consent-sdk"
+    "#onetrust-consent-sdk",
+    "#ad_position_box"
   ]
 }
