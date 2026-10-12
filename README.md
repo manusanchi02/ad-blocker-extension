@@ -10,6 +10,10 @@ A lightweight and efficient browser extension that blocks ads, banners, and unwa
 - **Video Ad Blocking**: Optional feature to block video advertisements
 - **Cookie Banner Removal**: Automatically removes annoying cookie consent banners
 - **Content Preservation**: Intelligent filtering to avoid blocking legitimate content like forms and interactive elements
+- **Tracker Blocking**: Network-level blocking of analytics/tracking domains (`rules.json`, declarativeNetRequest), tied to the main toggle
+- **Scroll Unlock**: Restores page scrolling after a consent banner is removed
+- **Popup Window Blocking**: Script-opened popup windows are closed (login/payment hosts are allowed)
+- **YouTube Ads**: Skips/accelerates in-player ads and hides ad slots
 - **Ad Counter**: Tracks the number of ads blocked during your browsing session
 - **Toggle Controls**: Easy on/off switches for general ad blocking and video ad blocking
 - **Manual Update**: Force update selectors from GitHub with a button click
@@ -90,6 +94,8 @@ ad-blocker-extension/
 ├── ad-block.js           # Main content script for ad blocking logic
 ├── ad-block.html         # Popup HTML interface
 ├── popup.js              # Popup functionality and controls
+├── rules.json            # Network blocking rules for tracker domains
+├── youtube.js            # YouTube ad handling content script
 ├── ad-selectors.json     # CSS selectors for ad detection (GitHub source)
 ├── background.js         # Background service worker
 └── README.md             # Project documentation

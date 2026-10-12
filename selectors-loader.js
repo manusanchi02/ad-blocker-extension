@@ -23,7 +23,18 @@ const DEFAULT_SELECTORS = {
         ".privacy-cp-wall",
         "#privacy-cp-wall",
         ".didomi-host",
-        "#didomi-host"
+        "#didomi-host",
+        ".didomi-popup-backdrop",
+        "#onetrust-consent-sdk",
+        ".onetrust-pc-dark-filter",
+        "#CybotCookiebotDialog",
+        "#CybotCookiebotDialogBodyUnderlay",
+        "#usercentrics-root",
+        ".osano-cm-window",
+        "#truste-consent-track",
+        "[id^='sp_message_container']",
+        ".fc-consent-root",
+        "ins.adsbygoogle"
     ],
     "generic": [
         ".ad",

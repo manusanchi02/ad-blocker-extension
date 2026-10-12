@@ -45,14 +45,54 @@ function isLegitimateElement(element) {
     return false;
 }
 
+// Elements that look like consent/cookie overlays (their removal usually leaves the page scroll-locked)
+const CONSENT_PATTERN = /cookie|consent|cmp|gdpr|privacy|didomi|onetrust|iubenda|sp_message|cybot|usercentrics|truste|osano/i;
+const SCROLL_LOCK_CLASSES = [
+    'modal-open', 'no-scroll', 'noscroll', 'no-scrolling', 'overflow-hidden', 'scroll-lock', 'is-locked',
+    'sp-message-open', 'didomi-popup-open', 'ot-no-scroll', 'cookie-modal-open', 'cmp-open'
+];
+
+function isConsentElement(element) {
+    return CONSENT_PATTERN.test(String(element.id) + ' ' + String(element.className));
+}
+
+// Restore page scrolling that a removed consent overlay had disabled
+function unlockScroll() {
+    [document.documentElement, document.body].forEach(el => {
+        if (!el) return;
+        SCROLL_LOCK_CLASSES.forEach(cls => el.classList.remove(cls));
+        const style = getComputedStyle(el);
+        if (style.overflow === 'hidden' || style.overflowY === 'hidden') {
+            el.style.setProperty('overflow', 'auto', 'important');
+        }
+        if (el === document.body && style.position === 'fixed') {
+            // sites lock the body with position:fixed + negative top; restore the scroll offset
+            const scrollY = -(parseInt(el.style.top, 10) || 0);
+            el.style.setProperty('position', 'static', 'important');
+            el.style.removeProperty('top');
+            if (scrollY) window.scrollTo(0, scrollY);
+        }
+    });
+}
+
+// Sites often re-apply the lock right after the banner disappears, so unlock a few times
+function scheduleUnlockScroll() {
+    unlockScroll();
+    [300, 1500].forEach(delay => setTimeout(unlockScroll, delay));
+}
+
 function blockAds() {
     let blockedCount = 0;
+    let consentRemoved = false;
 
     // Block specific selectors without validation (known ads/banners)
     specificSelectors.forEach(selector => {
         try {
             const elements = document.querySelectorAll(selector);
             elements.forEach(element => {
+                if (isConsentElement(element)) {
+                    consentRemoved = true;
+                }
                 element.remove();
                 blockedCount++;
             });
@@ -88,10 +128,14 @@ function blockAds() {
         }
     });
 
-    // block video ads if enabled
+    if (consentRemoved) {
+        scheduleUnlockScroll();
+    }
+
+    // block video ads if enabled (not on YouTube, where removing <video> breaks the player)
     chrome.storage.local.get(['videoAdBlockingEnabled'], function (result) {
         const videoAdBlockingEnabled = result.videoAdBlockingEnabled === true;
-        if (videoAdBlockingEnabled) {
+        if (videoAdBlockingEnabled && !/(^|\.)youtube\.com$/.test(location.hostname)) {
             const videoAds = document.querySelectorAll('video, [class*="video" i], [id*="video" i], iframe[src*="video" i]');
             videoAds.forEach(video => {
                 if (video.pause) {

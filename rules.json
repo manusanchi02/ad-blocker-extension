@@ -1,0 +1,64 @@
+[
+  {
+    "id": 1,
+    "priority": 1,
+    "action": {
+      "type": "block"
+    },
+    "condition": {
+      "requestDomains": [
+        "appmetrica.yandex.ru",
+        "ironsource.mobi",
+        "s.youtube.com",
+        "tagmanager.google.com",
+        "analytics.adobe.io",
+        "s.clarity.ms",
+        "app.posthog.com",
+        "eu.posthog.com",
+        "us.i.posthog.com",
+        "rudderstack.com",
+        "cdn.rudderlabs.com",
+        "snowplowanalytics.com",
+        "fingerprintjs.com",
+        "browser.sentry-cdn.com",
+        "o0.ingest.sentry.io",
+        "cdn.lr-ingest.com",
+        "r.lr-ingest.com",
+        "tr.facebook.com",
+        "analytics.x.com",
+        "ads.x.com",
+        "business-api.tiktok.com",
+        "pixel.quora.com",
+        "qevents.quora.com",
+        "books-analytics-events.apple.com",
+        "xp.apple.com",
+        "metrics.data.hicloud.com",
+        "metrics2.data.hicloud.com",
+        "grs.hicloud.com",
+        "logservice.hicloud.com",
+        "logservice1.hicloud.com",
+        "logbak.hicloud.com",
+        "ads.huawei.com",
+        "analytics-api.samsunghealthcn.com",
+        "ngfts.lge.com",
+        "settings-win.data.microsoft.com",
+        "browser.events.data.msn.com",
+        "click.mailchimp.com"
+      ],
+      "resourceTypes": [
+        "sub_frame",
+        "stylesheet",
+        "script",
+        "image",
+        "font",
+        "object",
+        "xmlhttprequest",
+        "ping",
+        "csp_report",
+        "media",
+        "websocket",
+        "other"
+      ]
+    }
+  }
+]

@@ -19,7 +19,18 @@
     "#privacy-cp-wall",
     ".didomi-host",
     "#didomi-host",
-    "#cl-consent"
+    "#cl-consent",
+    ".didomi-popup-backdrop",
+    "#onetrust-consent-sdk",
+    ".onetrust-pc-dark-filter",
+    "#CybotCookiebotDialog",
+    "#CybotCookiebotDialogBodyUnderlay",
+    "#usercentrics-root",
+    ".osano-cm-window",
+    "#truste-consent-track",
+    "[id^='sp_message_container']",
+    ".fc-consent-root",
+    "ins.adsbygoogle"
   ],
   "generic": [
     ".ad",

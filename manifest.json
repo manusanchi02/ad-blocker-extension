@@ -6,7 +6,8 @@
   "permissions": [
     "activeTab",
     "storage",
-    "tabs"
+    "tabs",
+    "declarativeNetRequest"
   ],
   "host_permissions": [
     "https://raw.githubusercontent.com/*"
@@ -21,8 +22,12 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["ad-selectors.json"],
-      "matches": ["<all_urls>"]
+      "resources": [
+        "ad-selectors.json"
+      ],
+      "matches": [
+        "<all_urls>"
+      ]
     }
   ],
   "content_scripts": [
@@ -35,6 +40,24 @@
         "ad-block.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://*.youtube.com/*"
+      ],
+      "js": [
+        "youtube.js"
+      ],
+      "run_at": "document_idle"
     }
-  ]
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "trackers",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  }
 }
