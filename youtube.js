@@ -60,12 +60,16 @@ function setEnabled(value) {
     cosmeticStyle.disabled = !value;
 }
 
-chrome.storage.local.get(['adBlockingEnabled'], (result) => {
-    setEnabled(result.adBlockingEnabled !== false);
-});
+function refreshEnabled() {
+    chrome.storage.local.get(['extensionEnabled', 'adBlockingEnabled'], (result) => {
+        setEnabled(result.extensionEnabled !== false && result.adBlockingEnabled !== false);
+    });
+}
+
+refreshEnabled();
 chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.adBlockingEnabled) {
-        setEnabled(changes.adBlockingEnabled.newValue !== false);
+    if (area === 'local' && (changes.adBlockingEnabled || changes.extensionEnabled)) {
+        refreshEnabled();
     }
 });
 

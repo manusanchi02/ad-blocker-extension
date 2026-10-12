@@ -2,11 +2,20 @@
 let specificSelectors = [];
 let genericSelectors = [];
 
+// Run blockAds only while the master switch and the Ad Blocking toggle are both on
+function runIfEnabled() {
+    chrome.storage.local.get(['extensionEnabled', 'adBlockingEnabled'], function (result) {
+        if (result.extensionEnabled !== false && result.adBlockingEnabled !== false) {
+            blockAds();
+        }
+    });
+}
+
 // Function to fetch selectors from GitHub with caching
 getSelectors().then(data => {
     specificSelectors = data.specific || [];
     genericSelectors = data.generic || [];
-    blockAds();
+    runIfEnabled();
 }).catch(error => {
     console.error('Errore nel caricamento dei selettori:', error);
     specificSelectors = [];
@@ -157,20 +166,10 @@ function blockAds() {
 }
 
 // Check if ad blocking is enabled
-chrome.storage.local.get(['adBlockingEnabled'], function (result) {
-    const adBlockingEnabled = result.adBlockingEnabled !== false;
-    if (adBlockingEnabled)
-        blockAds();
-});
+runIfEnabled();
 
 // Observe DOM changes to block dynamically loaded ads
-const observer = new MutationObserver(() => {
-    chrome.storage.local.get(['adBlockingEnabled'], function (result) {
-        const adBlockingEnabled = result.adBlockingEnabled !== false;
-        if (adBlockingEnabled)
-            blockAds();
-    });
-});
+const observer = new MutationObserver(runIfEnabled);
 
 observer.observe(document.body, {
     childList: true,

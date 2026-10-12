@@ -4,6 +4,26 @@ chrome.storage.local.get(['adsBlocked'], function (result) {
     document.getElementById('counter').textContent = count;
 });
 
+// Master switch: off disables the whole extension, on restores the other toggles as they were
+const dependentToggles = ['toggleBlocking', 'toggleVideoBlocking', 'toggleOpenInNewTab'];
+
+function applyMasterState(isEnabled) {
+    document.getElementById('toggleExtension').checked = isEnabled;
+    dependentToggles.forEach(id => {
+        document.getElementById(id).disabled = !isEnabled;
+    });
+}
+
+chrome.storage.local.get(['extensionEnabled'], function (result) {
+    applyMasterState(result.extensionEnabled !== false);
+});
+
+document.getElementById('toggleExtension').addEventListener('change', function () {
+    const isEnabled = this.checked;
+    chrome.storage.local.set({ extensionEnabled: isEnabled });
+    applyMasterState(isEnabled);
+});
+
 // Load and set the ad blocking toggle state
 chrome.storage.local.get(['adBlockingEnabled'], function (result) {
     const isEnabled = result.adBlockingEnabled !== false;

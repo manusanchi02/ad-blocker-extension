@@ -49,12 +49,12 @@ const POPUP_ALLOWLIST = [
 const RULESET_ID = 'trackers';
 
 /**
- * Check if ad blocking is enabled (main toggle)
+ * Check if blocking is enabled: the master switch (extensionEnabled) and the Ad Blocking toggle must both be on
  * @param {function(boolean): void} callback
  */
 function isBlockingEnabled(callback) {
-    chrome.storage.local.get(['adBlockingEnabled'], (result) => {
-        callback(result.adBlockingEnabled !== false);
+    chrome.storage.local.get(['extensionEnabled', 'adBlockingEnabled'], (result) => {
+        callback(result.extensionEnabled !== false && result.adBlockingEnabled !== false);
     });
 }
 
@@ -96,32 +96,57 @@ syncTrackerRuleset();
 chrome.runtime.onInstalled.addListener(syncTrackerRuleset);
 chrome.runtime.onStartup.addListener(syncTrackerRuleset);
 chrome.storage.onChanged.addListener((changes, area) => {
-    if (area === 'local' && changes.adBlockingEnabled) syncTrackerRuleset();
+    if (area === 'local' && (changes.adBlockingEnabled || changes.extensionEnabled)) syncTrackerRuleset();
 });
 
-// Ad popup windows (window.open with features) are always blocked while ad blocking is on
-chrome.windows.onCreated.addListener((win) => {
-    if (win.type !== 'popup') return;
+// New windows are always ad popups: closed unless the URL is on POPUP_ALLOWLIST (or the extension is off)
+const handledWindows = new Set();
+
+function checkNewWindow(windowId, attempt = 0) {
+    if (handledWindows.has(windowId)) return;
     isBlockingEnabled((enabled) => {
         if (!enabled) return;
-        chrome.windows.get(win.id, { populate: true }, (popup) => {
-            if (chrome.runtime.lastError || !popup) return;
-            const tab = popup.tabs && popup.tabs[0];
-            const url = tab ? (tab.pendingUrl || tab.url || '') : '';
+        chrome.windows.get(windowId, { populate: true }, (win) => {
+            if (chrome.runtime.lastError || !win) return;
+            if (win.type !== 'popup' && win.type !== 'normal') return; // devtools, app
+            // Only ever judge brand-new windows holding a single tab, never a window with your own tabs
+            if (!win.tabs || win.tabs.length !== 1) return;
+            const tab = win.tabs[0];
+            const url = tab.pendingUrl || tab.url || '';
+
+            // A "normal" window is only suspicious when a script just opened it from another tab
+            // (a loading tab with an opener; a tab dragged out of a window is already complete)
+            if (win.type === 'normal' && (!tab.openerTabId || tab.status !== 'loading')) return;
+
+            // The URL may not be known yet: look again shortly before deciding
+            if (!url && attempt < 2) {
+                setTimeout(() => checkNewWindow(windowId, attempt + 1), 400);
+                return;
+            }
             if (isAllowedPopupUrl(url)) return;
-            console.log(`Blocking popup window: ${url || 'about:blank'}`);
-            chrome.windows.remove(popup.id, () => {
-                if (chrome.runtime.lastError) return;
+
+            handledWindows.add(windowId);
+            console.log(`Blocking new window (${win.type}): ${url || 'about:blank'}`);
+            chrome.windows.remove(windowId, () => {
+                if (chrome.runtime.lastError) {
+                    console.warn('Could not close window:', chrome.runtime.lastError.message);
+                    return;
+                }
                 incrementBlocked();
             });
         });
     });
-});
+}
+
+chrome.windows.onCreated.addListener((win) => checkNewWindow(win.id));
+chrome.windows.onRemoved.addListener((windowId) => handledWindows.delete(windowId));
 
 chrome.tabs.onCreated.addListener((tab) => {
     if (tab.openerTabId) {
         tabOpeners.set(tab.id, tab.openerTabId);
     }
+    // Second safety net: the tab's window may not have been reported by windows.onCreated
+    checkNewWindow(tab.windowId);
 });
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
@@ -140,8 +165,9 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo) => {
     const openerTabId = tabOpeners.get(tabId);
     if (!openerTabId) return;
 
-    chrome.storage.local.get(['openInNewTab', 'adBlockingEnabled'], (result) => {
-        const blockingEnabled = result.openInNewTab === true && result.adBlockingEnabled !== false;
+    chrome.storage.local.get(['openInNewTab', 'adBlockingEnabled', 'extensionEnabled'], (result) => {
+        const blockingEnabled = result.openInNewTab === true && result.adBlockingEnabled !== false
+            && result.extensionEnabled !== false;
         if (!blockingEnabled) {
             tabOpeners.delete(tabId);
             return;
