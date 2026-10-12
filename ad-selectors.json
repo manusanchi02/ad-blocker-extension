@@ -20,6 +20,7 @@
     ".didomi-host",
     "#didomi-host",
     "#cl-consent",
+<<<<<<< HEAD
     ".didomi-popup-backdrop",
     "#onetrust-consent-sdk",
     ".onetrust-pc-dark-filter",
@@ -31,6 +32,10 @@
     "[id^='sp_message_container']",
     ".fc-consent-root",
     "ins.adsbygoogle"
+=======
+    "#onetrust-consent-sdk",
+    "#ad_position_box"
+>>>>>>> f04f084bf29d83095fa8764f2331cc9e61250a56
   ],
   "generic": [
     ".ad",
@@ -49,6 +54,8 @@
     ".sponsored-content",
     "#ad-banner",
     "#ad-container",
-    "#cl-consent"
+    "#cl-consent",
+    "#onetrust-consent-sdk",
+    "#ad_position_box"
   ]
 }
