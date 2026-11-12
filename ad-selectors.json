@@ -34,7 +34,9 @@
     "#onetrust-consent-sdk",
     "#ad_position_box",
     "#adv__webvtls",
-    ".adv__webvtls"
+    ".adv__webvtls",
+    ".DCDOr",
+    "#DCDOr"
   ],
   "generic": [
     ".ad",
@@ -55,6 +57,8 @@
     "#ad-container",
     "#cl-consent",
     "#onetrust-consent-sdk",
-    "#ad_position_box"
+    "#ad_position_box",
+    ".DCDOr",
+    "#DCDOr"
   ]
 }
